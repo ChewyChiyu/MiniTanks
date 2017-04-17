@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Graphics;
 
 public class Projectile {
@@ -118,7 +117,7 @@ public class Projectile {
 
 		}
 		}else{
-			g.fillOval(x, y, 100, 100);
+			g.drawImage(Texture.redBulletHit, x, y,height*2,width*2, null);
 		}
 	}
 	

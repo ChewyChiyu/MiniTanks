@@ -29,13 +29,12 @@ public class GamePanel extends JPanel implements Runnable {
 		tanks.add(player);
 		makePanel();
 		setUpKeyBinds();
-		setUpGameDetection();
 		setUpEnemys();
 		new Texture();
 		start();
 	}
 	public void setUpEnemys(){
-		tanks.add(new Tank(100,100,100,100,10, ObjectType.RED_TANK));
+		tanks.add(new EnemyTank((int)(Math.random()*WIDTH),(int)(Math.random()*HEIGHT),100,100,10, ObjectType.RED_TANK));
 	}
 	public void setUpGameDetection(){
 		gameDetection = new Thread(new Runnable(){
@@ -75,10 +74,32 @@ public class GamePanel extends JPanel implements Runnable {
 									p.setyVelocity(0);
 									p.hitSomething();
 									if(t2.fatalDamage(p.getPower())){
+										((EnemyTank)t2).mind.stop();
 										tanks.remove(t2);
 									}
 								}
 							}
+						}
+					}
+					
+					/*
+					 * 
+					 * Check For Out Of Bounds
+					 * 
+					 */
+					for(int index = 0; index < tanks.size(); index++){
+						Tank t = tanks.get(index);
+						if(t.getX()<0){
+							t.setX(t.getSpeed());
+						}
+						if(t.getX()>WIDTH){
+							t.setX(-t.getSpeed());
+						}
+						if(t.getY()<0){
+							t.setY(t.getSpeed());
+						}
+						if(t.getY()>HEIGHT){
+							t.setY(-t.getSpeed());
 						}
 					}
 					try{
@@ -96,7 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
 				
 			}
 		});
-		removeBullet = new Timer(500, e->{
+		removeBullet = new Timer(400, e->{
 			for(int index = 0; index < tanks.size(); index++){
 				Tank t = tanks.get(index);
 				for(int index2 = 0; index2 < t.getBulletArray().size(); index2++){
@@ -107,6 +128,8 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}	
 		});
+		gameDetection.start();
+		removeBullet.start();
 	}
 	
 	public void setUpKeyBinds(){
@@ -114,6 +137,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.getInputMap().put(KeyStroke.getKeyStroke("D"), "D");
 		this.getInputMap().put(KeyStroke.getKeyStroke("S"), "S");
 		this.getInputMap().put(KeyStroke.getKeyStroke("W"), "W");
+		this.getInputMap().put(KeyStroke.getKeyStroke("P"), "Pause");
 
 		this.getInputMap().put(KeyStroke.getKeyStroke("released A"), "rA");
 		this.getInputMap().put(KeyStroke.getKeyStroke("released D"), "rD");
@@ -122,7 +146,15 @@ public class GamePanel extends JPanel implements Runnable {
 
 		this.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "shoot");
 
-		
+		this.getActionMap().put("Pause", new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(isRunning){
+					stop();
+				}else
+					start();
+			}
+		});
 		this.getActionMap().put("shoot", new AbstractAction(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -207,15 +239,12 @@ public class GamePanel extends JPanel implements Runnable {
 		t = new Thread(this);
 		isRunning = true;
 		t.start();
-		gameDetection.start();
-		removeBullet.start();
+		setUpGameDetection();
 	}
 	public synchronized void stop(){
 		try{
 			isRunning = false;
 			t.join();
-			gameDetection.join();
-			removeBullet.stop();
 		}catch(Exception e){
 			
 		}

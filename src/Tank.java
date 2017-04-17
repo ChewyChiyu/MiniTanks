@@ -9,6 +9,7 @@ public class Tank {
 	Timer move;
 	int moveIndex = 0;
 	final int speed = 1;
+	boolean justHit = false;
 	public static int tankWidth;
 	public static int tankHeight;
 	int health;
@@ -47,6 +48,7 @@ public class Tank {
 		if((health-=pow)<=0){
 			return true;
 		}
+		justHit = true;
 		return false;
 	}
 	public void incrementMoveIndex(){
@@ -84,11 +86,10 @@ public class Tank {
 	}
 	public void draw(Graphics g, int x, int y){
 		switch(o){
-		case BLUE_TANK : case RED_TANK :
+		case BLUE_TANK : 
 		switch(d){
 		case EAST:
 			g.drawImage(Texture.blueWalkEast [moveIndex], x, y,width,height, null);
-			break;
 		case NORTH:
 			g.drawImage(Texture.blueWalkNorth [moveIndex], x, y,width,height, null);
 
@@ -116,8 +117,40 @@ public class Tank {
 			break;
 		
 		}
-		
-		
+		break;
+		case RED_TANK :
+			switch(d){
+			case EAST:
+				g.drawImage(Texture.redWalkEast [moveIndex], x, y,width,height, null);
+				break;
+			case NORTH:
+				g.drawImage(Texture.redWalkNorth [moveIndex], x, y,width,height, null);
+
+				break;
+			case NORTH_EAST:
+				g.drawImage(Texture.redWalkNE [moveIndex], x, y,width,height, null);
+				break;
+			case NORTH_WEST:
+				g.drawImage(Texture.redWalkNW [moveIndex], x, y,width,height, null);
+				break;
+			case SOUTH:
+				g.drawImage(Texture.redWalkSouth [moveIndex], x, y,width,height, null);
+				break;
+			case SOUTH_EAST:
+				g.drawImage(Texture.redWalkSE [moveIndex], x, y,width,height, null);
+				break;
+			case SOUTH_WEST:
+				g.drawImage(Texture.redWalkSW [moveIndex], x, y,width,height, null);
+				break;
+			case WEST:
+				g.drawImage(Texture.redWalkWest [moveIndex], x, y,width,height, null);
+				break;
+			default:
+				break;
+			
+			}
+			
+			break;
 		default:
 			break;
 		
