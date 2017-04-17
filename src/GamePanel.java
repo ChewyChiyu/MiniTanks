@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
 		start();
 	}
 	public void setUpEnemys(){
+		for(int index = 0; index < 4; index++)
 		tanks.add(new EnemyTank((int)(Math.random()*WIDTH),(int)(Math.random()*HEIGHT),100,100,10, ObjectType.RED_TANK));
 	}
 	public void setUpGameDetection(){
@@ -75,6 +76,7 @@ public class GamePanel extends JPanel implements Runnable {
 									p.hitSomething();
 									if(t2.fatalDamage(p.getPower())){
 										((EnemyTank)t2).mind.stop();
+										((EnemyTank)t2).attackMind.stop();
 										tanks.remove(t2);
 									}
 								}

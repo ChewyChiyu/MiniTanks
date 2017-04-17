@@ -2,7 +2,8 @@ import javax.swing.Timer;
 
 public class EnemyTank extends Tank {
 	Timer mind;
-	Timer randMind;
+	Timer attackMind;
+	int primedForFire = 0;
 	public EnemyTank(int x, int y, int width, int height, int health, ObjectType o) {
 		super(x, y, width, height, health, o);
 		switch((int)(Math.random()*4)){
@@ -24,28 +25,59 @@ public class EnemyTank extends Tank {
 			yVelocity = -speed;
 			break;
 		}
-		randMind = new Timer(5000, e->{
-			switch((int)(Math.random()*4)){
-
-			case 0:
-				xVelocity = speed;
-				yVelocity = speed;
-				break;
-			case 1:
-				xVelocity = -speed;
-				yVelocity = speed;
-				break;
-			case 2:
-				xVelocity = speed;
-				yVelocity = -speed;
-				break;
-			case 3:
-				xVelocity = -speed;
-				yVelocity = -speed;
-				break;
-			}
+		attackMind = new Timer(100, e->{
+		        double deltaX = GamePanel.player.getX()- getX(); 
+		        double deltaY = GamePanel.player.getY()- getY();
+		        double angle = Math.atan(Math.abs(deltaY/deltaX));
+		        angle = Math.toDegrees(angle);
+		        if((deltaX>0)&&(deltaY>0)){
+		            angle =360 - angle;
+		        }
+		        if((deltaX>0)&&(deltaY<0)){
+		        }
+		        if((deltaX<0)&&(deltaY>0)){
+		            angle+=180;
+		        }
+		        if((deltaX<0)&&(deltaY<0)){
+		            angle = 180 - angle;
+		            
+		        }
+		        angle = (int)(angle);
+		        if(angle<30&&angle>330){
+		        	xVelocity = speed;
+		        	yVelocity = 0;
+		        }
+		        if(angle>30&&angle<60){
+		        	xVelocity = speed;
+		        	yVelocity = -speed;
+		        }
+		        if(angle<210&&angle>150){
+		        	xVelocity = -speed;
+		        	yVelocity = 0;
+		        }
+		        if(angle>120&&angle<150){
+		        	xVelocity = -speed;
+		        	yVelocity = -speed;
+		        }
+		        if(angle<120&&angle>60){
+		        	xVelocity = 0;
+		        	yVelocity = -speed;
+		        }
+		        if(angle>300&&angle<330){
+		        	xVelocity = speed;
+		        	yVelocity = speed;
+		        }
+		        if(angle<300&&angle>240){
+		        	xVelocity = 0;
+		        	yVelocity = speed;
+		        }
+		        
+		        if(primedForFire++>=5){
+		        	shoot();
+		        	primedForFire = 0;
+		        }
 		});
-		randMind.start();
+		attackMind.start();
 		think();
 	}
 	public void think(){

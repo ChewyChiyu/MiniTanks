@@ -161,7 +161,10 @@ public class Tank {
 	}
 	
 	public void shoot(){
+		if(o.equals(ObjectType.BLUE_TANK))
 		bulletList.add(new Projectile(x,y,30,30,10,1,d,ObjectType.BLUE_TANK));
+		else
+			bulletList.add(new Projectile(x,y,30,30,10,1,d,ObjectType.RED_TANK));
 	}
 	public ArrayList<Projectile> getBulletArray(){
 		return bulletList;

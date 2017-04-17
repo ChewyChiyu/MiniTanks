@@ -28,7 +28,7 @@ public class Texture {
 	
 	public static BufferedImage[] redBullets = new BufferedImage[9];
 	
-	
+	public static BufferedImage spawner;
 	public static BufferedImage redBulletHit;
 	
 	public Texture(){
@@ -50,6 +50,12 @@ public class Texture {
 		URL imageUrl3 = getClass().getResource("/imgs/RedTank.png");
 		try {
 			spriteSheetRed = ImageIO.read(imageUrl3);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		URL imageUrl4 = getClass().getResource("/imgs/Spawner.png");
+		try {
+			spawner = ImageIO.read(imageUrl4);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
