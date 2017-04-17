@@ -1,4 +1,4 @@
 
 public enum ObjectType {
- BLUE_TANK;
+ BLUE_TANK, RED_TANK;
 }

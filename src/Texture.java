@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 
 public class Texture {
 	public BufferedImage spriteSheetBlue;
+	public BufferedImage spriteSheetProjectile;
 	public static BufferedImage[] blueWalkEast = new BufferedImage[8];
 	public static BufferedImage[] blueWalkWest = new BufferedImage[8];
 	public static BufferedImage[] blueWalkSouth = new BufferedImage[8];
@@ -14,7 +15,13 @@ public class Texture {
 	public static BufferedImage[] blueWalkSW = new BufferedImage[8];
 	public static BufferedImage[] blueWalkNW = new BufferedImage[8];
 	public static BufferedImage[] blueWalkNE = new BufferedImage[8];
-
+	
+	
+	public static BufferedImage[] redBullets = new BufferedImage[9];
+	
+	
+	
+	
 	public Texture(){
 		makeTextures();
 	}
@@ -22,6 +29,12 @@ public class Texture {
 		URL imageUrl = getClass().getResource("/imgs/BlueTank.png");
 		try {
 			spriteSheetBlue = ImageIO.read(imageUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		URL imageUrl2 = getClass().getResource("/imgs/Projectile.png");
+		try {
+			spriteSheetProjectile = ImageIO.read(imageUrl2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,5 +118,22 @@ public class Texture {
 			yBuffer+=84;
 		}
 	}
+	
+	//Missile Red
+	xBuffer = 8;
+	yBuffer = 11;
+	for(int index = 0 ; index < redBullets.length; index++){
+		redBullets [index] = spriteSheetProjectile.getSubimage(xBuffer, yBuffer, 18, 17);
+		xBuffer+=18 ;
+		if(xBuffer>=62){
+			xBuffer = 8;
+			yBuffer+=17;
+		}
+	}
+	
+	
+	
+	
+	
 	}
 }

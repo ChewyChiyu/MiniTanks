@@ -1,11 +1,18 @@
+import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import javax.swing.Timer;
 
 public class Tank {
+	ArrayList<Projectile> bulletList = new ArrayList<Projectile>();
 	Timer move;
 	int moveIndex = 0;
 	final int speed = 1;
+	public static int tankWidth;
+	public static int tankHeight;
+	int health;
+	final int initialHealth;
 	int x;
 	int y;
 	int xVelocity;
@@ -14,11 +21,15 @@ public class Tank {
 	final int height;
 	ObjectType o;
 	Direction d = Direction.EAST;
-	public Tank(int x, int y, int width, int height, ObjectType o){
+	public Tank(int x, int y, int width, int height,int health, ObjectType o){
 		this.x = x;
 		this.y = y;
+		initialHealth = health;
 		this.width = width;
 		this.height = height;
+		this.health = health;
+		tankWidth = width;
+		tankHeight = height;
 		this.o = o;
 		
 		move = new Timer(64, e->{
@@ -28,6 +39,15 @@ public class Tank {
 		});
 		move.start();
 		
+	}
+	public int getHealth() {
+		return health;
+	}
+	public boolean fatalDamage(int pow){
+		if((health-=pow)<=0){
+			return true;
+		}
+		return false;
 	}
 	public void incrementMoveIndex(){
 		moveIndex++;
@@ -64,7 +84,7 @@ public class Tank {
 	}
 	public void draw(Graphics g, int x, int y){
 		switch(o){
-		case BLUE_TANK :
+		case BLUE_TANK : case RED_TANK :
 		switch(d){
 		case EAST:
 			g.drawImage(Texture.blueWalkEast [moveIndex], x, y,width,height, null);
@@ -98,14 +118,22 @@ public class Tank {
 		}
 		
 		
-		
-		break;
-		
-		
+		default:
+			break;
 		
 		
 		}
+		g.setColor(Color.green);
+		g.fillRect(x, y+height, (int)(100*((double)health/initialHealth)), 7);
 	}
+	
+	public void shoot(){
+		bulletList.add(new Projectile(x,y,30,30,10,1,d,ObjectType.BLUE_TANK));
+	}
+	public ArrayList<Projectile> getBulletArray(){
+		return bulletList;
+	}
+	
 	public int getSpeed(){
 		return speed;
 	}
