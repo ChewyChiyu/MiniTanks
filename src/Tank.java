@@ -90,9 +90,9 @@ public class Tank {
 		switch(d){
 		case EAST:
 			g.drawImage(Texture.blueWalkEast [moveIndex], x, y,width,height, null);
+			break;
 		case NORTH:
 			g.drawImage(Texture.blueWalkNorth [moveIndex], x, y,width,height, null);
-
 			break;
 		case NORTH_EAST:
 			g.drawImage(Texture.blueWalkNE [moveIndex], x, y,width,height, null);
@@ -125,7 +125,6 @@ public class Tank {
 				break;
 			case NORTH:
 				g.drawImage(Texture.redWalkNorth [moveIndex], x, y,width,height, null);
-
 				break;
 			case NORTH_EAST:
 				g.drawImage(Texture.redWalkNE [moveIndex], x, y,width,height, null);

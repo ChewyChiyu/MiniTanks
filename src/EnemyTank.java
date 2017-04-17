@@ -42,6 +42,10 @@ public class EnemyTank extends Tank {
 		            angle = 180 - angle;
 		            
 		        }
+		        double distance = Math.sqrt(Math.abs(deltaX*deltaX)+Math.abs(deltaY+deltaY));
+		        if(distance<100){
+		        	return;
+		        }
 		        angle = (int)(angle);
 		        if(angle<30&&angle>330){
 		        	xVelocity = speed;

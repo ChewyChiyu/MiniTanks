@@ -118,6 +118,8 @@ public class Projectile {
 		}
 		}else{
 			g.drawImage(Texture.redBulletHit, x, y,height*2,width*2, null);
+			xVelocity = 0;
+			yVelocity = 0;
 		}
 	}
 	

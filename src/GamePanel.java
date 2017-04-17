@@ -19,23 +19,23 @@ public class GamePanel extends JPanel implements Runnable {
 	public Thread t;
 	public Thread gameDetection;
 	public Timer removeBullet;
-	public ArrayList<Tank> tanks = new ArrayList<Tank>();
+	public static ArrayList<Tank> tanks;
 	public boolean isRunning;
+	public boolean canAttack = true;
 	public final static int WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
 	public final static int HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
-	public static Tank player = new Tank(WIDTH/2, HEIGHT/2, 100, 100, 100, ObjectType.BLUE_TANK);
+	public Spawner enemyBase;
+	public static Tank player;
 	JFrame frame;
 	public GamePanel(){
+		player = new Tank(WIDTH/2, HEIGHT/2, 100, 100, 100, ObjectType.BLUE_TANK);
+		enemyBase = new Spawner(0, 0 );
+		tanks = new ArrayList<Tank>();
 		tanks.add(player);
 		makePanel();
 		setUpKeyBinds();
-		setUpEnemys();
 		new Texture();
 		start();
-	}
-	public void setUpEnemys(){
-		for(int index = 0; index < 4; index++)
-		tanks.add(new EnemyTank((int)(Math.random()*WIDTH),(int)(Math.random()*HEIGHT),100,100,10, ObjectType.RED_TANK));
 	}
 	public void setUpGameDetection(){
 		gameDetection = new Thread(new Runnable(){
@@ -75,6 +75,10 @@ public class GamePanel extends JPanel implements Runnable {
 									p.setyVelocity(0);
 									p.hitSomething();
 									if(t2.fatalDamage(p.getPower())){
+										if(t2.equals(player)){
+											tanks.remove(t2);
+											continue;
+										}
 										((EnemyTank)t2).mind.stop();
 										((EnemyTank)t2).attackMind.stop();
 										tanks.remove(t2);
@@ -104,12 +108,32 @@ public class GamePanel extends JPanel implements Runnable {
 							t.setY(-t.getSpeed());
 						}
 					}
+					/*
+					 * 
+					 * Bullet Hit Spawner
+					 * 
+					 * 
+					 * 
+					 */
+					
+					for(int index = 0; index < player.getBulletArray().size(); index++){			
+						Projectile p = player.getBulletArray().get(index);
+						if(p.getX()>enemyBase.getX()&&p.getX()<enemyBase.getX()+enemyBase.getWidth()&&p.getY()>enemyBase.getY()&&p.getY()<enemyBase.getY()+enemyBase.getHeight()){
+							p.hitSomething();
+							if(enemyBase.fatalDamage(p.getPower())){
+								new EndGamePanel(true);
+								frame.dispose();
+								stop();
+							}
+						}
+					}
 					try{
 						Thread.sleep(1);
 					}catch(Exception e){
 						
 					}
 				}
+	
 				
 				/*
 				 * Bullet removal
@@ -147,6 +171,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.getInputMap().put(KeyStroke.getKeyStroke("released W"), "rW");
 
 		this.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "shoot");
+		this.getInputMap().put(KeyStroke.getKeyStroke("released SPACE"), "rshoot");
 
 		this.getActionMap().put("Pause", new AbstractAction(){
 			@Override
@@ -160,7 +185,16 @@ public class GamePanel extends JPanel implements Runnable {
 		this.getActionMap().put("shoot", new AbstractAction(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(canAttack){
 				player.shoot();
+				canAttack = false;
+				}
+			}
+		});
+		this.getActionMap().put("rshoot", new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canAttack = true;
 			}
 		});
 		
@@ -265,9 +299,16 @@ public class GamePanel extends JPanel implements Runnable {
 	public void updateScreen(){
 		updateTankLocation();
 		updateBulletLocation();
+		checkForLose();
 		repaint();
 	}
-	
+	public void checkForLose(){
+		if(tanks.indexOf(player)==-1){
+			new EndGamePanel(true);
+			frame.dispose();
+			stop();
+		}
+	}
 	public void updateBulletLocation(){
 		for(int index = 0; index < tanks.size(); index++){
 			Tank t = tanks.get(index);
@@ -290,8 +331,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		drawBackDrop(g);
+		drawBase(g);
 		drawTanks(g);
 		drawBullets(g);
+	}
+	public void drawBase(Graphics g){
+		enemyBase.draw(g, enemyBase.getX(), enemyBase.getY());
 	}
 	public void drawBullets(Graphics g){
 		for(int index = 0; index < tanks.size(); index++){
